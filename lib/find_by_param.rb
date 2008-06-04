@@ -33,25 +33,31 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
 <tt>:escape</tt>:: [true|false] Do you want to escape the permalink value? (strip chars like öä?&?) - actually you must do that
 
 =end
-    def make_permalink(options={})
+        def make_permalink(options={})
           options[:field] ||= "permalink"
           options[:param] = options.delete(:with)
           options[:escape] ||= true
           options[:prepend_id] ||= false
-          
+    
           if self.column_names.include?(options[:field].to_s)
             options[:field_to_encode] = options[:param]
             options[:param] = options[:field]
-            
+      
             before_validation :save_permalink
             validates_uniqueness_of options[:param]
             validates_presence_of options[:param]
           end
-          
+    
           self.permalink_options = options
+  	      extend Railslove::Plugins::FindByParam::SingletonMethods
         	include Railslove::Plugins::FindByParam::InstanceMethods
+    	  rescue
+    	    puts "Database not available"
         end
-        
+      end
+      
+      module SingletonMethods
+  
         # found somewhere on the web.... don't know where... but it's from a clever guy - (done some motifications)
         def escape(str)
           return "" if str.blank? # hack if the str/attribute is nil/blank
@@ -85,7 +91,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         def find_by_param!(value, args={})
           param = permalink_options[:param]
           obj = find_by_param(value, args)
-          raise ActiveRecord::RecordNotFound unless obj
+          raise ::ActiveRecord::RecordNotFound unless obj
           obj
         end
       end
