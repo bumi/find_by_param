@@ -24,7 +24,15 @@ class FindByParamTest < Test::Unit::TestCase
   def test_permalink_should_be_trunkated
     Post.class_eval "make_permalink :with => :title"
     post = Post.create(:title=>"thisoneisaveryveryveryveryveryveryverylonglonglonglongtitlethisoneisaveryveryveryveryveryveryverylonglonglonglongtitle")
-    assert_equal post.to_param, "thisoneisaveryveryveryveryveryveryverylonglonglonglongtitlethisoneisaveryveryveryveryveryveryverylong"
+    assert_equal "thisoneisaveryveryveryveryveryveryverylonglonglong", post.to_param
+    assert_equal post.to_param.size, 50
+    assert_equal post.permalink, post.to_param
+  end
+  
+  def test_permalink_should_be_trunkated_to_custom_size
+    Post.class_eval "make_permalink :with => :title, :param_size=>10"
+    post = Post.create(:title=>"thisoneisaveryveryveryveryveryveryverylonglonglonglongtitlethisoneisaveryveryveryveryveryveryverylonglonglonglongtitle")
+    assert_equal post.to_param, "thisoneisa"
     assert_equal post.permalink, post.to_param
   end
   
@@ -64,11 +72,11 @@ class FindByParamTest < Test::Unit::TestCase
     Post.class_eval "make_permalink :with => :title"
     User.class_eval "make_permalink :with => :login"
     Article.class_eval "make_permalink :with => :title, :prepend_id => true"
-    assert_equal( {:param => "permalink", :field => "permalink", :field_to_encode => :title, :prepend_id => false, :escape => true}, Post.permalink_options)
+    assert_equal( {:param => "permalink", :param_size => 50, :field => "permalink", :field_to_encode => :title, :prepend_id => false, :escape => true}, Post.permalink_options)
     
-    assert_equal( {:param => :login, :field => "permalink", :prepend_id => false, :escape => true}, User.permalink_options)
+    assert_equal( {:param => :login, :param_size => 50, :field => "permalink", :prepend_id => false, :escape => true}, User.permalink_options)
     
-    assert_equal( {:param => :title, :field => "permalink", :prepend_id => true, :escape => true}, Article.permalink_options)
+    assert_equal( {:param => :title, :param_size => 50, :field => "permalink", :prepend_id => true, :escape => true}, Article.permalink_options)
   end
   
 end

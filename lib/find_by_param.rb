@@ -38,7 +38,8 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
           options[:param] = options.delete(:with)
           options[:escape] ||= true
           options[:prepend_id] ||= false
-    
+          options[:param_size] ||= 50
+          
           if self.column_names.include?(options[:field].to_s)
             options[:field_to_encode] = options[:param]
             options[:param] = options[:field]
@@ -131,10 +132,10 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
           self.class.escape(value)
         end
         
-        #this escapes and truncates a value. default length is 100
+        #this escapes and truncates a value.
         #used to escape and truncate permalink value
-        def escape_and_truncate_for_permalink(value, length=100)
-          self.class.escape(value)[0..length]
+        def escape_and_truncate_for_permalink(value)
+          self.class.escape(value)[0...self.permalink_options[:param_size]]
         end
       end
       
