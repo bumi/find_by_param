@@ -65,6 +65,7 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
           s = Iconv.iconv('ascii//ignore//translit', 'utf-8', str.dup).to_s
           returning str.dup.to_s do |s|
             s.gsub!(/\ +/, '-') # spaces to dashes, preferred separator char everywhere
+            s.gsub!(/\-+/,'-') # ----- to - 
             s.gsub!(/[^\w^-]+/, '') # kill non-word chars except -
             s.strip!            # ohh la la
             s.downcase!         # :D
