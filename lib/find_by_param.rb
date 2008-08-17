@@ -80,7 +80,12 @@ Returns nil if nothing is found
 Accepts an options hash as a second parameter which is passed on to the rails finder.
 =end
         def find_by_param(value,args={})
-          param = permalink_options[:prepend_id] ? "id" : permalink_options[:param]
+          if permalink_options[:prepend_id]
+            param = "id"
+            value = value.to_i
+          else
+            param = permalink_options[:param]
+          end
           self.send("find_by_#{param}".to_sym, value, args)
         end
 
