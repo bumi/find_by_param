@@ -53,7 +53,7 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
   	      extend Railslove::Plugins::FindByParam::SingletonMethods
         	include Railslove::Plugins::FindByParam::InstanceMethods
     	  rescue
-    	    puts "Database not available"
+    	    puts "[find_by_param error] database not available"
         end
       end
       
