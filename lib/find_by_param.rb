@@ -113,7 +113,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
           end
         end
         
-        private
+        protected
         
         def save_permalink
           return unless self.class.column_names.include?(permalink_options[:field].to_s)
@@ -141,7 +141,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         #this escapes and truncates a value.
         #used to escape and truncate permalink value
         def escape_and_truncate_for_permalink(value)
-          self.class.escape(value)[0...self.permalink_options[:param_size]]
+          self.escape(value)[0...self.permalink_options[:param_size]]
         end
       end
       
