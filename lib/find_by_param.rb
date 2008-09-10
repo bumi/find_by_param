@@ -112,7 +112,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         def save_permalink
           return unless self.class.column_names.include?(permalink_options[:field].to_s)
           counter = 0
-          base_value = escape_and_truncate_permalink(read_attribute(permalink_options[:with])).downcase
+          base_value = escape_and_truncate_permalink(send(permalink_options[:with])).downcase
           permalink_value = "#{base_value}"
           
           conditions = ["#{self.class.table_name}.#{permalink_options[:field]} = ?", permalink_value]

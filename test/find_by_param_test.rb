@@ -4,6 +4,11 @@ require(File.join(File.dirname(__FILE__), 'test_helper'))
 class Post < ActiveRecord::Base; end
 class User < ActiveRecord::Base; end
 class Article < ActiveRecord::Base; end
+class Author < ActiveRecord::Base; 
+  def full_name
+    [first_name, last_name].join(" ")
+  end
+end
 
 # TODO DO BETTER TESTING!!!! 
 class FindByParamTest < Test::Unit::TestCase
@@ -20,6 +25,14 @@ class FindByParamTest < Test::Unit::TestCase
     assert_equal "hey-ho-let-s-go", post.to_param
     assert_equal post.permalink, post.to_param
   end
+
+  def test_permalink_should_be_allowed_on_virtual_attributes
+    Author.class_eval "make_permalink :with => :full_name"
+    post = Author.create(:first_name => "Bugs", :last_name => "Bunny")
+    assert_equal post.to_param, "bugs-bunny"
+    assert_equal post.permalink, post.to_param
+  end
+  
   
   def test_permalink_should_be_trunkated
     Post.class_eval "make_permalink :with => :title"
