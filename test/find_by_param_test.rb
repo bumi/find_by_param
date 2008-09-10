@@ -28,12 +28,37 @@ class FindByParamTest < Test::Unit::TestCase
 
   def test_permalink_should_be_allowed_on_virtual_attributes
     Author.class_eval "make_permalink :with => :full_name"
-    post = Author.create(:first_name => "Bugs", :last_name => "Bunny")
-    assert_equal post.to_param, "bugs-bunny"
-    assert_equal post.permalink, post.to_param
+    author = Author.create(:first_name => "Bugs", :last_name => "Bunny")
+    assert_equal author.to_param, "bugs-bunny"
+    assert_equal author.permalink, author.to_param
+  end
+
+  def test_permalink_should_not_create_forbidden_permalinks_given_one_string
+    Author.class_eval "make_permalink :with => :first_name, :forbidden => 'me'"
+    author = Author.create(:first_name => "me")
+    assert_not_equal author.to_param, "me"
+  end
+
+  def test_permalink_should_not_create_forbidden_permalinks_given_mulitple_strings
+    Author.class_eval "make_permalink :with => :first_name, :forbidden => %w{you me}"
+    author1 = Author.create(:first_name => "me")
+    author2 = Author.create(:first_name => "you")
+
+    assert_not_equal author1.to_param, "me"
+    assert_not_equal author2.to_param, "you"
+    assert_not_equal author1.to_param, author2.to_param
   end
   
-  
+  def test_permalink_should_not_create_forbidden_permalinks_given_a_regexp
+    Author.class_eval 'make_permalink :with => :first_name, :forbidden => /\D$/'
+    author1 = Author.create(:first_name => "me")
+    author2 = Author.create(:first_name => "you")
+
+    assert_not_equal author1.to_param, "me"
+    assert_not_equal author2.to_param, "you"
+    assert_not_equal author1.to_param, author2.to_param
+  end
+
   def test_permalink_should_be_trunkated
     Post.class_eval "make_permalink :with => :title"
     post = Post.create(:title=>"thisoneisaveryveryveryveryveryveryverylonglonglonglongtitlethisoneisaveryveryveryveryveryveryverylonglonglonglongtitle")
@@ -88,14 +113,44 @@ class FindByParamTest < Test::Unit::TestCase
   end
   
   def test_does_not_leak_options
-    Post.class_eval "make_permalink :with => :title"
-    User.class_eval "make_permalink :with => :login"
-    Article.class_eval "make_permalink :with => :title, :prepend_id => true"
-    assert_equal( {:param => "permalink", :param_size => 50, :field => "permalink", :prepend_id => false, :escape => true, :with => :title, :validate => true}, Post.permalink_options)
+    Post.class_eval "make_permalink :with => :title, :forbidden => 'foo'"
+    assert_equal( {:param => "permalink", 
+                   :param_size => 50, 
+                   :field => "permalink", 
+                   :with => :title, 
+                   :prepend_id => false, 
+                   :escape => true, 
+                   :validate => true,
+                   :forbidden_strings => ["foo"]}, Post.permalink_options)
     
-    assert_equal( {:param => :login, :param_size => 50, :field => "permalink", :prepend_id => false, :escape => true, :with => :login, :validate => true}, User.permalink_options)
+    User.class_eval "make_permalink :with => :login, :forbidden => %w{foo bar}"
+    assert_equal( {:param => :login, 
+                   :param_size => 50, 
+                   :field => "permalink", 
+                   :with => :login,
+                   :prepend_id => false, 
+                   :escape => true, 
+                   :validate => true,
+                   :forbidden_strings => ["foo", "bar"]}, User.permalink_options)
     
-    assert_equal( {:param => :title, :param_size => 50, :field => "permalink", :prepend_id => true, :escape => true, :with => :title, :validate => true}, Article.permalink_options)
+    Article.class_eval "make_permalink :with => :title, :prepend_id => true, :forbidden => /baz$/"
+    assert_equal( {:param => :title, 
+                   :param_size => 50, 
+                   :field => "permalink", 
+                   :with => :title,
+                   :prepend_id => true, 
+                   :escape => true, 
+                   :validate => true,
+                   :forbidden_match => /baz$/}, Article.permalink_options)
+
+    Author.class_eval "make_permalink :with => :full_name"
+    assert_equal( {:param => "permalink", 
+                   :param_size => 50, 
+                   :field => "permalink", 
+                   :with => :full_name, 
+                   :prepend_id => false, 
+                   :escape => true, 
+                   :validate => true}, Author.permalink_options)
   end
   
 end

@@ -51,6 +51,14 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
           if !options[:prepend_id] || !options[:validate]
             validate :validate_param_is_not_blank
           end
+
+          if forbidden = options.delete(:forbidden)
+            if forbidden.is_a? Regexp
+              options[:forbidden_match] = forbidden
+            else
+              options[:forbidden_strings] = Array(forbidden).map(&:to_s)
+            end
+          end
           
           if self.column_names.include?(options[:field].to_s)
             options[:param] = options[:field]
@@ -120,7 +128,8 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
             conditions.first << " and #{self.class.table_name}.#{self.class.primary_key} != ?"
             conditions       << self.send(self.class.primary_key.to_sym)
           end
-          while self.class.count(:all, :conditions => conditions) > 0
+          while is_forbidden?(permalink_value) or
+                self.class.count(:all, :conditions => conditions) > 0
             permalink_value = "#{base_value}-#{counter += 1}"
             conditions[1] = permalink_value
           end
@@ -135,6 +144,22 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         def escape_permalink(value)
           value.to_s.parameterize
         end
+
+        def is_forbidden?(permalink_value)
+          is_forbidden_string?(permalink_value) ||
+            matches_forbidden_regexp?(permalink_value)
+        end
+
+        def is_forbidden_string?(permalink_value)
+          permalink_options[:forbidden_strings] && 
+            permalink_options[:forbidden_strings].include?(permalink_value)
+        end
+
+        def matches_forbidden_regexp?(permalink_value)
+          permalink_options[:forbidden_match] &&
+            permalink_options[:forbidden_match] =~ permalink_value
+        end
+
         
         #this escapes and truncates a value.
         #used to escape and truncate permalink value
