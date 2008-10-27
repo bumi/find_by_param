@@ -17,7 +17,7 @@ class FindByParamTest < Test::Unit::TestCase
   def test_permalink_should_be_saved
     Post.class_eval "make_permalink :with => :title"
     post = Post.create(:title=>"hey ho let's go!")
-    assert_equal post.to_param, "hey-ho-lets-go"
+    assert_equal post.to_param, "hey-ho-let-s-go"
     assert_equal post.permalink, post.to_param
   end
   
@@ -46,7 +46,7 @@ class FindByParamTest < Test::Unit::TestCase
   def test_to_param_should_perpend_id
     Article.class_eval "make_permalink :with => :title, :prepend_id=>true "
     article = Article.create(:title=>"hey ho let's go!")
-    assert_equal article.to_param, "#{article.id}-hey-ho-lets-go"
+    assert_equal article.to_param, "#{article.id}-hey-ho-let-s-go"
   end
   
   def test_should_increment_counter_if_not_unique
@@ -65,7 +65,7 @@ class FindByParamTest < Test::Unit::TestCase
   end
   
   def test_escape_should_strip_special_chars
-    assert_equal "hello-nice-dude", Post.escape("+*(he/=&l$l<o !ni^?ce-`duäöde;:@")
+    assert_equal "+-he-l-l-o-ni-ce-duaode", Post.escape("+*(he/=&l$l<o !ni^?ce-`duäöde;:@")
   end
   
   def test_does_not_leak_options

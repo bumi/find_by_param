@@ -1,3 +1,9 @@
+begin
+  require "active_support/multibyte"
+rescue LoadError
+  require "rubygems"
+  require "active_support/multibyte"
+end
 module Railslove
   module Plugins
     module FindByParam
@@ -59,20 +65,19 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
       
       module SingletonMethods
   
-        # found somewhere on the web.... don't know where... but it's from a clever guy - (done some motifications)
-        def escape(str)
+        # borrowed from http://github.com/henrik/slugalizer ;) thanks henrik http://github.com/henrik
+        def escape(str, separator='-')
           return "" if str.blank? # hack if the str/attribute is nil/blank
-          s = Iconv.iconv('ascii//ignore//translit', 'utf-8', str.dup).to_s
-          returning str.dup.to_s do |s|
-            s.gsub!(/\ +/, '-') # spaces to dashes, preferred separator char everywhere
-            s.gsub!(/\-+/,'-') # ----- to - 
-            s.gsub!(/[^\w^-]+/, '') # kill non-word chars except -
-            s.strip!            # ohh la la
-            s.downcase!         # :D
-            s.gsub!(/([^ a-zA-Z0-9_-]+)/n,"") # and now kill every char not allowed.
-          end
+          re_separator = Regexp.escape(separator)
+          result = ActiveSupport::Multibyte::Handlers::UTF8Handler.normalize(str.to_s, :kd)
+          result.gsub!(/[^\x00-\x7F]+/, '') # Remove non-ASCII (e.g. diacritics).
+          result.gsub!(/[^a-z0-9\-_\+]+/i, separator) # Turn non-slug chars into the separator.
+          result.gsub!(/#{re_separator}{2,}/, separator) # No more than one of the separator in a row.
+          result.gsub!(/^#{re_separator}|#{re_separator}$/, '') # Remove leading/trailing separator.
+          result.downcase!
+          result
         end
-        
+          
 =begin rdoc
 
 Search for an object by the defined permalink column. Similar to find_by_login.
@@ -119,7 +124,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
           return unless self.class.column_names.include?(permalink_options[:field].to_s)
           counter = 0
           base_value = escape_and_truncate_for_permalink(read_attribute(permalink_options[:field_to_encode]))
-          permalink_value = "#{base_value}"
+          permalink_value = "#{base_value}".downcase
           
           conditions = ["#{self.class.table_name}.#{permalink_options[:field]} = ?", permalink_value]
           unless new_record?
@@ -135,7 +140,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         end
         
         def escape(value)
-          self.class.escape(value)
+          "#{value.respond_to?("parameterize") ? value.parameterize : self.class.escape(value)}"
         end
         
         #this escapes and truncates a value.
