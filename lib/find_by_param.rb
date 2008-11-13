@@ -37,6 +37,7 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
 <tt>:field</tt>:: The name of your permalink column. make_permalink first checks if there is a column. 
 <tt>:prepend_id</tt>:: [true|false] Do you want to prepend the ID to the permalink? for URLs like: posts/123-my-post-title - find_by_param uses the ID column to search.
 <tt>:escape</tt>:: [true|false] Do you want to escape the permalink value? (strip chars like öä?&?) - actually you must do that
+<tt>:validate</tt>:: [true|false] Don't validate the :with field - set this to false if you validate it on your own
 =end
         def make_permalink(options={})
           options[:field] ||= "permalink"
