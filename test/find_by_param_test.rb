@@ -17,7 +17,7 @@ class FindByParamTest < Test::Unit::TestCase
   def test_permalink_should_be_saved
     Post.class_eval "make_permalink :with => :title"
     post = Post.create(:title=>"hey ho let's go!")
-    assert_equal post.to_param, "hey-ho-let-s-go"
+    assert_equal "hey-ho-let-s-go", post.to_param
     assert_equal post.permalink, post.to_param
   end
   
@@ -32,7 +32,7 @@ class FindByParamTest < Test::Unit::TestCase
   def test_permalink_should_be_trunkated_to_custom_size
     Post.class_eval "make_permalink :with => :title, :param_size=>10"
     post = Post.create(:title=>"thisoneisaveryveryveryveryveryveryverylonglonglonglongtitlethisoneisaveryveryveryveryveryveryverylonglonglonglongtitle")
-    assert_equal post.to_param, "thisoneisa"
+    assert_equal "thisoneisa",post.to_param
     assert_equal post.permalink, post.to_param
   end
   
@@ -41,6 +41,12 @@ class FindByParamTest < Test::Unit::TestCase
     user = User.create(:login=>"bumi")
     assert_equal user, User.find_by_param("bumi")
     assert_equal user, User.find_by_param!("bumi")
+  end
+  
+  def test_should_validate_presence_of_the_field_used_to_create_the_param
+    User.class_eval "make_permalink :with => :login"
+    user = User.create(:login=>nil)
+    assert_equal false, user.valid?
   end
   
   def test_to_param_should_perpend_id
@@ -53,7 +59,7 @@ class FindByParamTest < Test::Unit::TestCase
     Post.class_eval "make_permalink :with => :title"
     Post.create(:title=>"my awesome title!")
     post = Post.create(:title=>"my awesome title!")
-    assert_equal post.to_param, "my-awesome-title-1"
+    assert_equal "my-awesome-title-1", post.to_param
     assert_equal post.permalink, post.to_param
   end
   
@@ -72,11 +78,11 @@ class FindByParamTest < Test::Unit::TestCase
     Post.class_eval "make_permalink :with => :title"
     User.class_eval "make_permalink :with => :login"
     Article.class_eval "make_permalink :with => :title, :prepend_id => true"
-    assert_equal( {:param => "permalink", :param_size => 50, :field => "permalink", :field_to_encode => :title, :prepend_id => false, :escape => true}, Post.permalink_options)
+    assert_equal( {:param => "permalink", :param_size => 50, :field => "permalink", :prepend_id => false, :escape => true, :with => :title, :validate => true}, Post.permalink_options)
     
-    assert_equal( {:param => :login, :param_size => 50, :field => "permalink", :prepend_id => false, :escape => true}, User.permalink_options)
+    assert_equal( {:param => :login, :param_size => 50, :field => "permalink", :prepend_id => false, :escape => true, :with => :login, :validate => true}, User.permalink_options)
     
-    assert_equal( {:param => :title, :param_size => 50, :field => "permalink", :prepend_id => true, :escape => true}, Article.permalink_options)
+    assert_equal( {:param => :title, :param_size => 50, :field => "permalink", :prepend_id => true, :escape => true, :with => :title, :validate => true}, Article.permalink_options)
   end
   
 end

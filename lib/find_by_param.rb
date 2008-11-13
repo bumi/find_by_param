@@ -37,29 +37,30 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
 <tt>:field</tt>:: The name of your permalink column. make_permalink first checks if there is a column. 
 <tt>:prepend_id</tt>:: [true|false] Do you want to prepend the ID to the permalink? for URLs like: posts/123-my-post-title - find_by_param uses the ID column to search.
 <tt>:escape</tt>:: [true|false] Do you want to escape the permalink value? (strip chars like öä?&?) - actually you must do that
-
 =end
         def make_permalink(options={})
           options[:field] ||= "permalink"
-          options[:param] = options.delete(:with)
+          options[:param] = options[:with] # :with => :login - but if we have a spcific permalink column we need to set :param to the name of that column
           options[:escape] ||= true
           options[:prepend_id] ||= false
           options[:param_size] ||= 50
+          options[:validate] ||= true
+          
+          # validate if there is something we can use as param. you can overwrite the validate_param_is_not_blank method to customize the validation and the error messge.
+          if !options[:prepend_id] || !options[:validate]
+            validate :validate_param_is_not_blank
+          end
           
           if self.column_names.include?(options[:field].to_s)
-            options[:field_to_encode] = options[:param]
             options[:param] = options[:field]
-      
-            before_validation :save_permalink
-            validates_uniqueness_of options[:param]
-            validates_presence_of options[:param]
+            before_save :save_permalink
           end
     
           self.permalink_options = options
   	      extend Railslove::Plugins::FindByParam::SingletonMethods
         	include Railslove::Plugins::FindByParam::InstanceMethods
     	  rescue
-    	    puts "[find_by_param error] database not available"
+    	    puts "[find_by_param error] database not available?"
         end
       end
       
@@ -123,7 +124,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         def save_permalink
           return unless self.class.column_names.include?(permalink_options[:field].to_s)
           counter = 0
-          base_value = escape_and_truncate_for_permalink(read_attribute(permalink_options[:field_to_encode]))
+          base_value = escape_and_truncate_for_permalink(read_attribute(permalink_options[:with]))
           permalink_value = "#{base_value}".downcase
           
           conditions = ["#{self.class.table_name}.#{permalink_options[:field]} = ?", permalink_value]
@@ -137,6 +138,10 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
           end
           write_attribute(permalink_options[:field], permalink_value)
           true
+        end
+        
+        def validate_param_is_not_blank
+          errors.add(permalink_options[:with], "must have at least one non special character (a-z 0-9)") if self.escape( self.send(permalink_options[:with]) ).blank?
         end
         
         def escape(value)
