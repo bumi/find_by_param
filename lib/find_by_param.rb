@@ -68,7 +68,7 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
       module SingletonMethods
   
         # borrowed from http://github.com/henrik/slugalizer ;) thanks henrik http://github.com/henrik
-        def escape(str, separator='-')
+        def escape_permalink(str, separator='-')
           return "" if str.blank? # hack if the str/attribute is nil/blank
           re_separator = Regexp.escape(separator)
           result = ActiveSupport::Multibyte::Handlers::UTF8Handler.normalize(str.to_s, :kd)
@@ -116,7 +116,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
           returning "" do |param|
             param << "#{id}" if value.blank? || permalink_options[:prepend_id]
             param << "-" if permalink_options[:prepend_id]
-            param << "#{escape_and_truncate_for_permalink(value)}"
+            param << "#{escape_and_truncate_permalink(value)}"
           end
         end
         
@@ -125,8 +125,8 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         def save_permalink
           return unless self.class.column_names.include?(permalink_options[:field].to_s)
           counter = 0
-          base_value = escape_and_truncate_for_permalink(read_attribute(permalink_options[:with]))
-          permalink_value = "#{base_value}".downcase
+          base_value = escape_and_truncate_permalink(read_attribute(permalink_options[:with])).downcase
+          permalink_value = "#{base_value}"
           
           conditions = ["#{self.class.table_name}.#{permalink_options[:field]} = ?", permalink_value]
           unless new_record?
@@ -142,17 +142,17 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         end
         
         def validate_param_is_not_blank
-          errors.add(permalink_options[:with], "must have at least one non special character (a-z 0-9)") if self.escape( self.send(permalink_options[:with]) ).blank?
+          errors.add(permalink_options[:with], "must have at least one non special character (a-z 0-9)") if self.escape_permalink( self.send(permalink_options[:with]) ).blank?
         end
         
-        def escape(value)
-          "#{value.respond_to?("parameterize") ? value.parameterize : self.class.escape(value)}"
+        def escape_permalink(value)
+          "#{value.respond_to?("parameterize") ? value.parameterize.to_s : self.class.escape_permalink(value)}"
         end
         
         #this escapes and truncates a value.
         #used to escape and truncate permalink value
-        def escape_and_truncate_for_permalink(value)
-          self.escape(value)[0...self.permalink_options[:param_size]]
+        def escape_and_truncate_permalink(value)
+          self.escape_permalink(value)[0...self.permalink_options[:param_size]]
         end
       end
       
