@@ -1,8 +1,8 @@
 begin
-  require "active_support/multibyte"
+  $KCODE = 'u'
+  require 'rubygems'
+  require 'active_support'
 rescue LoadError
-  require "rubygems"
-  require "active_support/multibyte"
 end
 module Railslove
   module Plugins
@@ -66,19 +66,6 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
       end
       
       module SingletonMethods
-  
-        # borrowed from http://github.com/henrik/slugalizer ;) thanks henrik http://github.com/henrik
-        def escape_permalink(str, separator='-')
-          return "" if str.blank? # hack if the str/attribute is nil/blank
-          re_separator = Regexp.escape(separator)
-          result = ActiveSupport::Multibyte::Handlers::UTF8Handler.normalize(str.to_s, :kd)
-          result.gsub!(/[^\x00-\x7F]+/, '') # Remove non-ASCII (e.g. diacritics).
-          result.gsub!(/[^a-z0-9\-_\+]+/i, separator) # Turn non-slug chars into the separator.
-          result.gsub!(/#{re_separator}{2,}/, separator) # No more than one of the separator in a row.
-          result.gsub!(/^#{re_separator}|#{re_separator}$/, '') # Remove leading/trailing separator.
-          result.downcase!
-          result
-        end
           
 =begin rdoc
 
@@ -146,7 +133,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         end
         
         def escape_permalink(value)
-          "#{value.respond_to?("parameterize") ? value.parameterize.to_s : self.class.escape_permalink(value)}"
+          value.to_s.parameterize
         end
         
         #this escapes and truncates a value.

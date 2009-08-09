@@ -70,8 +70,8 @@ class FindByParamTest < Test::Unit::TestCase
     assert_equal nil, Post.find_by_param("isnothere")
   end
   
-  def test_escape_should_strip_special_chars
-    assert_equal "+-he-l-l-o-ni-ce-duaode", Post.escape("+*(he/=&l$l<o !ni^?ce-`duäöde;:@")
+  def test_should_strip_special_chars
+    assert_equal "+-he-l-l-o-ni-ce-duaode", Post.new.send(:escape_permalink, "+*(he/=&l$l<o !ni^?ce-`duäöde;:@")
   end
   
   def test_does_not_leak_options
