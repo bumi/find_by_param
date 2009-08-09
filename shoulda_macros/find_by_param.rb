@@ -1,4 +1,4 @@
-require "matchers"
+require File.join(File.dirname(__FILE__), 'matchers')
 # this is experimental. My first try to write a shoulda matcher
 module Railslove
   module Plugins
