@@ -44,45 +44,51 @@ Basic Documentation
 Options for make_permalink
 --------------------------
 
- * `:with` (required)
+The following options may be used, when configuring the permalink generation
+with `make_permalink`.
 
-   The attribute that should be used as permalink
+ *   `:with` (required)
 
- * `:field`
+     The attribute that should be used as permalink
 
-   The name of your permalink column. make_permalink first checks if there is 
-   a column. 
+ *   `:field`
 
- * `:prepend_id => [true|false]`
+     The name of your permalink column. make_permalink first checks if there is 
+     a column. 
 
-   Do you want to prepend the ID to the permalink? for URLs like:
-   `posts/123-my-post-title` - *find_by_param* uses the ID column to search.
+ *   `:prepend_id => [true|false]`
 
- * `:escape => [true|false]`
+     Do you want to prepend the ID to the permalink? for URLs like:
+     `posts/123-my-post-title` - *find_by_param* uses the ID column to search.
 
-   Do you want to escape the permalink value? (strip chars like öä?&?) -
-   actually you must do that
+ *   `:escape => [true|false]`
 
- * `:forbidden => [Regexp|String|Array of Strings]`
+     Do you want to escape the permalink value? (strip chars like öä?&?) -
+     actually you must do that
 
-   Define which values should be forbidden. This is useful when combining user
-   defined values to generate permalinks in combination with restful routing.
-   **Make sure, especially in the case of a Regexp argument, that values may
-   become valid by adding or incrementing a trailing integer.**
+ *   `:forbidden => [Regexp|String|Array of Strings]`
+
+     Define which values should be forbidden. This is useful when combining user
+     defined values to generate permalinks in combination with restful routing.
+     **Make sure, especially in the case of a Regexp argument, that values may
+     become valid by adding or incrementing a trailing integer.**
 
 
 Class methods provided by *find_by_param*
 ---------------------------------------
 
- * `:find_by_param(id)`
+The following methods are added as public methods to all classes containing a
+permalink field.
 
-   Look up a value by its permalink value, returns matching instance or `nil`,
-   if none is found.
+ *   `:find_by_param(id)`
 
- * `:find_by_param!(id)`
+     Look up a value by its permalink value, returns matching instance or
+     `nil`, if none is found.
 
-   Look up a value by its permalink value, returns matching instance or raises
-   `ActiveRecord::RecordNotFound`, if none is found.
+ *   `:find_by_param!(id)`
+
+     Look up a value by its permalink value, returns matching instance or
+     raises `ActiveRecord::RecordNotFound`, if none is found.
 
 
 Issues
