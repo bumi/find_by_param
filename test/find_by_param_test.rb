@@ -143,14 +143,14 @@ class FindByParamTest < Test::Unit::TestCase
                    :validate => true,
                    :forbidden_match => /baz$/}, Article.permalink_options)
 
-    Author.class_eval "make_permalink :with => :full_name"
+    Author.class_eval "make_permalink :with => :full_name, :validate => false"
     assert_equal( {:param => "permalink", 
                    :param_size => 50, 
                    :field => "permalink", 
                    :with => :full_name, 
                    :prepend_id => false, 
                    :escape => true, 
-                   :validate => true}, Author.permalink_options)
+                   :validate => false}, Author.permalink_options)
   end
   
 end

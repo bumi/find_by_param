@@ -45,7 +45,7 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
           options[:escape] ||= true
           options[:prepend_id] ||= false
           options[:param_size] ||= 50
-          options[:validate] ||= true
+          options[:validate] = true if options[:validate].nil?
           
           # validate if there is something we can use as param. you can overwrite the validate_param_is_not_blank method to customize the validation and the error messge.
           if !options[:prepend_id] || !options[:validate]
