@@ -1,7 +1,8 @@
-FindByParam
-===========
+find_by_param
+=============
 
-Find_by_param helps you dealing with permalinks and finding objects by our permalink value
+*find_by_param* helps you dealing with permalinks and finding objects by our
+permalink value
 
     class Post < ActiveRecord:Base
       make_permalink :with => :title
@@ -11,7 +12,8 @@ now you can do
   
     Post.find_by_param(...)
 
-If you have a permalink-column find_by_param saves the permalink there and uses that otherwise it just uses the provided attribute.
+If you have a permalink-column *find_by_param* saves the permalink there and
+uses that otherwise it just uses the provided attribute.
 
 
 Examples
@@ -51,7 +53,7 @@ Options for make_permalink
 
   `:prepend_id => [true|false]`
   :Do you want to prepend the ID to the permalink? for URLs like:
-  `posts/123-my-post-title` - find_by_param uses the ID column to search.
+  `posts/123-my-post-title` - *find_by_param* uses the ID column to search.
 
   `:escape => [true|false]`
   :Do you want to escape the permalink value? (strip chars like öä?&?) -
@@ -64,7 +66,7 @@ Options for make_permalink
   become valid by adding or incrementing a trailing integer.**
 
 
-Class methods provided by find_by_param
+Class methods provided by *find_by_param*
 ---------------------------------------
 
   `:find_by_param(id)`
