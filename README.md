@@ -14,26 +14,33 @@ now you can do
 If you have a permalink-column find_by_param saves the permalink there and uses that otherwise it just uses the provided attribute.
 
 
-Example Usage
-=============
+Examples
+========
 
-    Post.create(:title => "hey ho let's go!").to_param #=> "hey-ho-lets-go"  (to_param is the method Rails calls to create the URL values)
+Comfiguration
+-------------
+
+    make_permalink :with => :login
+    make_permalink :with => :title, :prepend_id => true
+    make_permalink :with => :name, :forbidden => %w(new edit)
+
+Client code
+-----------
+
+    Post.create(:title => "hey ho let's go!").to_param #=> "hey-ho-lets-go" 
+              # ... to_param is the method Rails calls to create the URL values
 
     Post.find_by_param("hey-ho-lets-go") #=> <Post>
 
-    Post.find_by_param("is-not-there") #=> nil
-    Post.find_by_param!("is-not-there") #=> raises ActiveRecord::RecordNotFound
+    Post.find_by_param("is-not-there")   #=> nil
+    Post.find_by_param!("is-not-there")  #=> raises ActiveRecord::RecordNotFound
 
-Example Configuration
-=====================
 
-    make_permalink :with => :login
-    make_permalink :with => :title, :prepend_id=>true
-    make_permalink :with => :name, :forbidden => %w(new edit)
-
+Basic Documentation
+===================
 
 Options for make_permalink
-==========================
+--------------------------
 
   `:with` (required)
   :The attribute that should be used as permalink
@@ -56,8 +63,9 @@ Options for make_permalink
   **Make sure, especially in the case of a Regexp argument, that values may
   become valid by adding or incrementing a trailing integer.**
 
+
 Class methods provided by find_by_param
-=======================================
+---------------------------------------
 
   `:find_by_param(id)`
   :Look up a value by its permalink value, returns matching instance or `nil`,
