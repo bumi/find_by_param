@@ -63,7 +63,7 @@ with `make_permalink`.
 
  *   `:escape => [true|false]`
 
-     Do you want to escape the permalink value? (strip chars like öä?&?) -
+     Do you want to escape the permalink value? (strip chars like `öä?&`) -
      actually you must do that
 
  *   `:forbidden => [Regexp|String|Array of Strings]`
@@ -80,12 +80,12 @@ Class methods provided by *find_by_param*
 The following methods are added as public methods to all classes containing a
 permalink field.
 
- *   `:find_by_param(id)`
+ *   `find_by_param(id)`
 
      Look up a value by its permalink value, returns matching instance or
      `nil`, if none is found.
 
- *   `:find_by_param!(id)`
+ *   `find_by_param!(id)`
 
      Look up a value by its permalink value, returns matching instance or
      raises `ActiveRecord::RecordNotFound`, if none is found.
