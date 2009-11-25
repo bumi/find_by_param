@@ -19,7 +19,7 @@ uses that otherwise it just uses the provided attribute.
 Examples
 ========
 
-Comfiguration
+Configuration
 -------------
 
     make_permalink :with => :login
