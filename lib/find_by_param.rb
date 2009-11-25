@@ -7,9 +7,23 @@ end
 module Railslove
   module Plugins
     module FindByParam
-      
-      def self.included(base)
-        base.extend(ClassMethods)
+      def self.enable
+        return if ActiveRecord::Base.kind_of?(self::ClassMethods)
+
+        ActiveRecord::Base.class_eval do
+          class_inheritable_accessor :permalink_options
+          self.permalink_options = {:param => :id}
+          
+          #default finders these are overwritten if you use make_permalink in
+          # your model
+          def self.find_by_param(value,args={})
+            find_by_id(value,args)
+          end
+          def self.find_by_param!(value,args={})
+            find(value,args)
+          end
+        end
+        ActiveRecord::Base.extend(self::ClassMethods)
       end
       
       module ClassMethods
@@ -171,4 +185,8 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
       
     end
   end
+end
+
+if defined?(ActiveRecord)
+  Railslove::Plugins::FindByParam.enable
 end
