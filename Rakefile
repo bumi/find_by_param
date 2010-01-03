@@ -27,7 +27,7 @@ begin
   Jeweler::Tasks.new do |s|
     s.name        = "find_by_param"
     s.summary     = "Rails plugin to handle permalink values"
-    s.email       = "michael@derbumi.com"
+    s.email       = "michael@railslove.com"
     s.homepage    = "http://github.com/bumi/find_by_param"
     s.description = "find_by_param is a nice and easy way to handle " +
                     "permalinks and dealing with searching for to_param values"
