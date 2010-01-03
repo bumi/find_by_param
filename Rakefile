@@ -33,7 +33,8 @@ begin
                     "permalinks and dealing with searching for to_param values"
     s.authors = ["Michael Bumann", "Gregor Schmidt"]
     s.add_dependency('activerecord', '>= 2.3')
-
+    s.add_dependency('activesupport', '>= 2.3')
+    
     s.add_development_dependency('sqlite3-ruby')
     s.add_development_dependency('jeweler', '>= 0.11.0')
     s.add_development_dependency('rake')
