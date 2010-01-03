@@ -31,7 +31,7 @@ begin
     s.homepage    = "http://github.com/bumi/find_by_param"
     s.description = "find_by_param is a nice and easy way to handle " +
                     "permalinks and dealing with searching for to_param values"
-    s.authors = ["Michael Bumann"]
+    s.authors = ["Michael Bumann", "Gregor Schmidt"]
     s.add_dependency('activerecord', '>= 2.3')
 
     s.add_development_dependency('sqlite3-ruby')
