@@ -33,7 +33,7 @@ Building your own
 As Rails plugin
 -------------
 
-    % script/plugin install git@github.com:bumi/find_by_param.git
+    % script/plugin install git://github.com/bumi/find_by_param.git
 
 
 Examples
