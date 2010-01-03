@@ -16,6 +16,26 @@ If you have a permalink-column *find_by_param* saves the permalink there and
 uses that otherwise it just uses the provided attribute.
 
 
+Installation
+========
+
+As gem from gemcutter:
+-------------
+
+    % gem install find_by_param
+
+Building your own
+-------------
+
+    % rake gemspec
+    % rake install
+
+As Rails plugin
+-------------
+
+    % script/plugin install git@github.com:bumi/find_by_param.git
+
+
 Examples
 ========
 
