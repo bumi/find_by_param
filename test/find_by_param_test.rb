@@ -12,7 +12,13 @@ end
 
 # TODO DO BETTER TESTING!!!! 
 class FindByParamTest < Test::Unit::TestCase
-  
+  def teardown
+    Post.delete_all
+    User.delete_all
+    Article.delete_all
+    Author.delete_all
+  end
+
   def test_default_should_return_id
     post = Post.create(:title=>"hey ho let's go!")
     assert_equal post.to_param, post.id.to_s
@@ -29,14 +35,20 @@ class FindByParamTest < Test::Unit::TestCase
   def test_permalink_should_be_allowed_on_virtual_attributes
     Author.class_eval "make_permalink :with => :full_name"
     author = Author.create(:first_name => "Bugs", :last_name => "Bunny")
-    assert_equal author.to_param, "bugs-bunny"
+    assert_equal "bugs-bunny", author.to_param
     assert_equal author.permalink, author.to_param
   end
 
   def test_permalink_should_not_create_forbidden_permalinks_given_one_string
     Author.class_eval "make_permalink :with => :first_name, :forbidden => 'me'"
-    author = Author.create(:first_name => "me")
-    assert_not_equal author.to_param, "me"
+    author1 = Author.create(:first_name => "me")
+    author2 = Author.create(:first_name => "you")
+    assert_not_equal "me",  author1.to_param
+    assert_equal     "you", author2.to_param
+
+    # This is implementation detail and should not really be tested. It's just
+    # that I feel better, when it is.
+    assert_equal "me-1", author1.to_param
   end
 
   def test_permalink_should_not_create_forbidden_permalinks_given_mulitple_strings
@@ -44,9 +56,14 @@ class FindByParamTest < Test::Unit::TestCase
     author1 = Author.create(:first_name => "me")
     author2 = Author.create(:first_name => "you")
 
-    assert_not_equal author1.to_param, "me"
-    assert_not_equal author2.to_param, "you"
+    assert_not_equal "me",  author1.to_param
+    assert_not_equal "you", author2.to_param
     assert_not_equal author1.to_param, author2.to_param
+
+    # This is implementation detail and should not really be tested. It's just
+    # that I feel better, when it is.
+    assert_equal "me-1",  author1.to_param
+    assert_equal "you-1", author2.to_param
   end
   
   def test_permalink_should_not_create_forbidden_permalinks_given_a_regexp
@@ -54,9 +71,14 @@ class FindByParamTest < Test::Unit::TestCase
     author1 = Author.create(:first_name => "me")
     author2 = Author.create(:first_name => "you")
 
-    assert_not_equal author1.to_param, "me"
-    assert_not_equal author2.to_param, "you"
+    assert_not_equal "me",  author1.to_param
+    assert_not_equal "you", author2.to_param
     assert_not_equal author1.to_param, author2.to_param
+
+    # This is implementation detail and should not really be tested. It's just
+    # that I feel better, when it is.
+    assert_equal "me-1",  author1.to_param
+    assert_equal "you-1", author2.to_param
   end
 
   def test_permalink_should_be_trunkated
@@ -70,7 +92,7 @@ class FindByParamTest < Test::Unit::TestCase
   def test_permalink_should_be_trunkated_to_custom_size
     Post.class_eval "make_permalink :with => :title, :param_size=>10"
     post = Post.create(:title=>"thisoneisaveryveryveryveryveryveryverylonglonglonglongtitlethisoneisaveryveryveryveryveryveryverylonglonglonglongtitle")
-    assert_equal "thisoneisa",post.to_param
+    assert_equal "thisoneisa",   post.to_param
     assert_equal post.permalink, post.to_param
   end
   
