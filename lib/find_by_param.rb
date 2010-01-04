@@ -145,7 +145,15 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
           end
           while is_forbidden?(permalink_value) or
                 self.class.count(:all, :conditions => conditions) > 0
-            permalink_value = "#{base_value}-#{counter += 1}"
+            counter += 1
+            permalink_value = "#{base_value}-#{counter}"
+
+            if permalink_value.size > permalink_options[:param_size]
+              length = permalink_options[:param_size] - counter.to_s.size - 2
+              truncated_base = base_value[0..length]
+              permalink_value = "#{truncated_base}-#{counter}"
+            end
+
             conditions[1] = permalink_value
           end
           write_attribute(permalink_options[:field], permalink_value)

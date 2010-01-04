@@ -95,6 +95,26 @@ class FindByParamTest < Test::Unit::TestCase
     assert_equal "thisoneisa",   post.to_param
     assert_equal post.permalink, post.to_param
   end
+
+  def test_permalink_should_be_truncated_in_case_of_collision
+    Post.class_eval "make_permalink :with => :title, :param_size => 10"
+    post1 = Post.create(:title=>"thisoneisaveryveryvery")
+    post2 = Post.create(:title=>"thisoneisaveryveryvery")
+
+    assert_not_equal post1.to_param,  post2.to_param
+    assert_not_equal post1.permalink, post2.permalink
+
+    assert_equal post1.permalink, post1.to_param
+    assert_equal post2.permalink, post2.to_param
+
+    assert(10 >= post1.to_param.size, "permalink of post1 is too long")
+    assert(10 >= post2.to_param.size, "permalink of post2 is too long")
+
+    # This is implementation detail and should not really be tested. It's just
+    # that I feel better, when it is.
+    assert_equal "thisoneisa",   post1.permalink
+    assert_equal "thisonei-1",   post2.permalink
+  end
   
   def test_should_search_field_for_to_param_field
     User.class_eval "make_permalink :with => :login"
