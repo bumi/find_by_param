@@ -124,9 +124,12 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         def to_param
           value = self.send(permalink_options[:param]).dup.to_s.downcase rescue ""
           returning "" do |param|
-            param << "#{id}" if value.blank? || permalink_options[:prepend_id]
-            param << "-" if permalink_options[:prepend_id]
-            param << "#{escape_and_truncate_permalink(value)}"
+            if value.blank?
+              param << id.to_s
+            else 
+              param << "#{id}-" if permalink_options[:prepend_id] 
+              param << escape_and_truncate_permalink(value)
+            end
           end
         end
         
