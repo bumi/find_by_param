@@ -1,0 +1,9 @@
+== 0.1.1 tbd
+
+* minor enhancement:
+  * fixes wrong to_param value on collision and truncation (fixes #1)
+
+== 0.1.0 2010-01-02
+
+* 1 major enhancement:
+  * Initial release
