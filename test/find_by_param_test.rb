@@ -96,14 +96,20 @@ class FindByParamTest < Test::Unit::TestCase
   def test_should_increment_counter_if_not_unique
     Post.class_eval "make_permalink :with => :title"
     Post.create(:title=>"my awesome title!")
+
     post = Post.create(:title=>"my awesome title!")
     assert_equal "my-awesome-title-1", post.to_param
+    assert_equal post.permalink, post.to_param
+
+    post = Post.create(:title=>"my awesome title!")
+    assert_equal "my-awesome-title-2", post.to_param
     assert_equal post.permalink, post.to_param
   end
   
   def test_should_record_not_found_error
     assert_raise(ActiveRecord::RecordNotFound) { Post.find_by_param!("isnothere") }
   end
+
   def test_should_return_nil_if_not_found
     assert_equal nil, Post.find_by_param("isnothere")
   end
@@ -152,5 +158,4 @@ class FindByParamTest < Test::Unit::TestCase
                    :escape => true, 
                    :validate => false}, Author.permalink_options)
   end
-  
 end
