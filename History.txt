@@ -2,6 +2,8 @@
 
 * minor enhancement:
   * fixes wrong to_param value on collision and truncation (fixes #1)
+  * updating to newer Rails APIs
+  * removing trailing dashes from generated permalink (fixes #2)
 
 == 0.1.0 2010-01-02
 
