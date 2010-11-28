@@ -157,7 +157,7 @@ class FindByParamTest < Test::Unit::TestCase
   end
   
   def test_should_strip_special_chars
-    assert_equal "+-he-l-l-o-ni-ce-duaode", Post.new.send(:escape_permalink, "+*(he/=&l$l<o !ni^?ce-`duäöde;:@")
+    assert_equal "he-l-l-o-ni-ce-duaode", Post.new.send(:escape_permalink, "+*(he/=&l$l<o !ni^?ce-`duäöde;:@")
   end
   
   def test_does_not_leak_options
