@@ -140,7 +140,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
           return unless self.class.column_names.include?(permalink_options[:field].to_s)
           counter = 0
           base_value = escape_and_truncate_permalink(send(permalink_options[:with])).downcase
-          permalink_value = "#{base_value}"
+          permalink_value = base_value.to_s
 
           conditions = ["#{self.class.table_name}.#{permalink_options[:field]} = ?", permalink_value]
           unless new_record?
@@ -165,7 +165,10 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
         end
 
         def validate_param_is_not_blank
-          errors.add(permalink_options[:with], "must have at least one non special character (a-z 0-9)") if self.escape_permalink( self.send(permalink_options[:with]) ).blank?
+          if self.escape_and_truncate_permalink(self.send(permalink_options[:with])).blank?
+            errors.add(permalink_options[:with], 
+                       "must have at least one non special character (a-z 0-9)") 
+          end
         end
 
         def escape_permalink(value)
