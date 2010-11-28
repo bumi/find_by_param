@@ -20,26 +20,3 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
-
-begin
-  gem 'jeweler', '>= 0.11.0'
-  require 'jeweler'
-  Jeweler::Tasks.new do |s|
-    s.name        = "find_by_param"
-    s.summary     = "Rails plugin to handle permalink values"
-    s.email       = "michael@railslove.com"
-    s.homepage    = "http://github.com/bumi/find_by_param"
-    s.description = "find_by_param is a nice and easy way to handle " +
-                    "permalinks and dealing with searching for to_param values"
-    s.authors = ["Michael Bumann", "Gregor Schmidt"]
-    s.add_dependency('activerecord', '>= 2.3')
-    s.add_dependency('activesupport', '>= 2.3')
-    
-    s.add_development_dependency('sqlite3-ruby')
-    s.add_development_dependency('jeweler', '>= 0.11.0')
-    s.add_development_dependency('rake')
-  end
-rescue LoadError
-  puts "Jeweler not available. Install it with: sudo gem install jeweler --version '>= 0.11.0'"
-  exit(1)
-end
