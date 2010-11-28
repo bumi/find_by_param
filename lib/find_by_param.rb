@@ -8,7 +8,7 @@ end
 module Railslove
   module Plugins
     module FindByParam
-      def self.enable
+      def self.enable # :nodoc:
         return if ActiveRecord::Base.kind_of?(self::ClassMethods)
 
         ActiveRecord::Base.class_eval do
@@ -17,10 +17,10 @@ module Railslove
 
           #default finders these are overwritten if you use make_permalink in
           # your model
-          def self.find_by_param(value,args={})
+          def self.find_by_param(value,args={}) # :nodoc:
             find_by_id(value,args)
           end
-          def self.find_by_param!(value,args={})
+          def self.find_by_param!(value,args={}) # :nodoc:
             find(value,args)
           end
         end
@@ -35,7 +35,7 @@ module Railslove
 This method initializes find_by_param
 
   class Post < ActiveRecord::Base
-    make_permalink :with => :title, :prepend_id=>true
+    make_permalink :with => :title, :prepend_id => true
   end
 
 The only required parameter, is <tt>:with</tt>.
@@ -49,10 +49,11 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
 == Available options
 
 <tt>:with</tt>:: (required) The attribute that should be used as permalink
-<tt>:field</tt>:: The name of your permalink column. make_permalink first checks if there is a column.
-<tt>:prepend_id</tt>:: [true|false] Do you want to prepend the ID to the permalink? for URLs like: posts/123-my-post-title - find_by_param uses the ID column to search.
-<tt>:escape</tt>:: [true|false] Do you want to escape the permalink value? (strip chars like öä?&) - actually you must do that
-<tt>:validate</tt>:: [true|false] Don't validate the :with field - set this to false if you validate it on your own
+<tt>:field</tt>:: The name of your permalink column. make_permalink first checks if there is a column, default is 'permalink'.
+<tt>:prepend_id</tt>:: [true|false] Do you want to prepend the ID to the permalink? for URLs like: posts/123-my-post-title - find_by_param uses the ID column to search, default is false.
+<tt>:param_size</tt>:: [Number] Desired maximum size of the permalink, default is 50.
+<tt>:escape</tt>:: [true|false] Do you want to escape the permalink value? (strip chars like öä?&) - actually you must do that, default is true.
+<tt>:validate</tt>:: [true|false] Don't validate the :with field - set this to false if you validate it on your own, default is true.
 <tt>:forbidden</tt>:: [Regexp|String|Array of Strings] Define which values should be forbidden. This is useful when combining user defined values to generate permalinks in combination with restful routing. <b>Make sure, especially in the case of a Regexp argument, that values may become valid by adding or incrementing a trailing integer.</b>
 =end
         def make_permalink(options={})
@@ -93,11 +94,11 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
 
 =begin rdoc
 
-Search for an object by the defined permalink column. Similar to find_by_login.
-Returns nil if nothing is found
-Accepts an options hash as a second parameter which is passed on to the rails finder.
+Search for an object by the defined permalink column. Similar to
++find_by_login+. Returns +nil+ if nothing is found. Accepts an options hash as
+second parameter which is passed on to the rails finder.
 =end
-        def find_by_param(value,args={})
+        def find_by_param(value, args={})
           if permalink_options[:prepend_id]
             param = "id"
             value = value.to_i
@@ -109,9 +110,11 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
 
 =begin rdoc
 
-Like find_by_param but raises an ActiveRecord::RecordNotFound error if nothing is found. Similar to find()
+Like +find_by_param+ but raises an <tt>ActiveRecord::RecordNotFound</tt> error
+if nothing is found - similar to find().
 
-Accepts an options hash as a second parameter which is passed on to the rails finder.
+Accepts an options hash as second parameter which is passed on to the rails
+finder.
 =end
         def find_by_param!(value, args={})
           param = permalink_options[:param]

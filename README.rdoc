@@ -1,0 +1,114 @@
+= find_by_param
+
+_find_by_param_ helps you dealing with permalinks and finding objects by our
+permalink value
+
+    class Post < ActiveRecord:Base
+      make_permalink :with => :title
+    end
+
+now you can do 
+  
+    Post.find_by_param(...)
+
+If you have a permalink-column _find_by_param_ saves the permalink there and
+uses that otherwise it just uses the provided attribute.
+
+
+== Installation
+
+=== Via RubyGems
+
+    % gem install find_by_param
+
+=== Building your own
+
+    % gem build find_by_param.gemspec
+    % gem install find_by_param-VERSION.gem
+
+=== As Rails plugin
+
+    % script/plugin install git://github.com/bumi/find_by_param.git
+
+
+== Examples
+
+=== Configuration
+
+    make_permalink :with => :login
+    make_permalink :with => :title, :prepend_id => true
+    make_permalink :with => :name, :forbidden => %w(new edit)
+
+=== Client code
+
+    Post.create(:title => "hey ho let's go!").to_param #=> "hey-ho-lets-go" 
+              # ... to_param is the method Rails calls to create the URL values
+
+    Post.find_by_param("hey-ho-lets-go") #=> <Post>
+
+    Post.find_by_param("is-not-there")   #=> nil
+    Post.find_by_param!("is-not-there")  #=> raises ActiveRecord::RecordNotFound
+
+
+== Basic Documentation
+
+=== Options for make_permalink
+
+The following options may be used, when configuring the permalink generation
+with +make_permalink+.
+
+* <tt>:with</tt> (required)
+
+  The attribute that should be used as permalink
+
+* <tt>:field</tt>
+
+  The name of your permalink column. make_permalink first checks if there is 
+  a column. 
+
+* <tt>:prepend_id => [true|false]</tt>
+
+  Do you want to prepend the ID to the permalink? for URLs like:
+  <tt>posts/123-my-post-title</tt> - _find_by_param_ uses the ID column to
+  search.
+
+* <tt>:param_size => [Number]</tt>
+  
+  Desired maximum size of the permalink, default is 50.
+
+* <tt>:escape => [true|false]</tt>
+
+  Do you want to escape the permalink value? (strip chars like
+  <tt>öä?&</tt>) - actually you must do that
+
+* <tt>:forbidden => [Regexp|String|Array of Strings]</tt>
+
+  Define which values should be forbidden. This is useful when combining user
+  defined values to generate permalinks in combination with restful routing.
+  <b>Make sure, especially in the case of a Regexp argument, that values may
+  become valid by adding or incrementing a trailing integer.</b>
+
+
+=== Class methods provided by _find_by_param_
+
+The following methods are added as public methods to all classes containing a
+permalink field.
+
+* <tt>find_by_param(id)</tt>
+
+  Look up a value by its permalink value, returns matching instance or
+  +nil+, if none is found.
+
+* <tt>find_by_param!(id)</tt>
+
+  Look up a value by its permalink value, returns matching instance or
+  raises <tt>ActiveRecord::RecordNotFound</tt>, if none is found.
+
+
+=== Issues
+
+* Alex Sharp (http://github.com/ajsharp) pointed to an issue with STI. Better call make_permalink in every child class and not only in the parent class..
+* write nice docs
+* write nicer tests
+
+Copyright (c) 2007 [Michael Bumann - Railslove.com], released under the MIT license

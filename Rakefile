@@ -14,9 +14,9 @@ end
 
 desc 'Generate documentation for the find_by_param plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'FindByParam'
+  rdoc.rdoc_dir = 'doc'
+  rdoc.title    = 'find_by_param'
   rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README')
+  rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
