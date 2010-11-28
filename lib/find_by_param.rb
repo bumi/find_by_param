@@ -123,7 +123,7 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
       module InstanceMethods
         def to_param
           value = self.send(permalink_options[:param]).dup.to_s.downcase rescue ""
-          tap "" do |param|
+          ''.tap do |param|
             if value.blank?
               param << id.to_s
             else
