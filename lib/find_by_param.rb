@@ -4,6 +4,7 @@ begin
   require 'active_support'
 rescue LoadError
 end
+
 module Railslove
   module Plugins
     module FindByParam
@@ -83,7 +84,7 @@ You can use for example User.find_by_param(params[:id], args) to find the user b
           self.permalink_options = options
           extend Railslove::Plugins::FindByParam::SingletonMethods
           include Railslove::Plugins::FindByParam::InstanceMethods
-        rescue
+        rescue ActiveRecord::ActiveRecordError
           puts "[find_by_param error] database not available?"
         end
       end
