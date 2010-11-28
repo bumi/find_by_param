@@ -81,7 +81,7 @@ class FindByParamTest < Test::Unit::TestCase
     assert_equal "you-1", author2.to_param
   end
 
-  def test_permalink_should_be_trunkated
+  def test_permalink_should_be_truncated
     Post.class_eval "make_permalink :with => :title"
     post = Post.create(:title=>"thisoneisaveryveryveryveryveryveryverylonglonglonglongtitlethisoneisaveryveryveryveryveryveryverylonglonglonglongtitle")
     assert_equal "thisoneisaveryveryveryveryveryveryverylonglonglong", post.to_param
@@ -89,7 +89,7 @@ class FindByParamTest < Test::Unit::TestCase
     assert_equal post.permalink, post.to_param
   end
   
-  def test_permalink_should_be_trunkated_to_custom_size
+  def test_permalink_should_be_truncated_to_custom_size
     Post.class_eval "make_permalink :with => :title, :param_size=>10"
     post = Post.create(:title=>"thisoneisaveryveryveryveryveryveryverylonglonglonglongtitlethisoneisaveryveryveryveryveryveryverylonglonglonglongtitle")
     assert_equal "thisoneisa",   post.to_param
