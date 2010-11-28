@@ -115,6 +115,13 @@ class FindByParamTest < Test::Unit::TestCase
     assert_equal "thisoneisa",   post1.permalink
     assert_equal "thisonei-1",   post2.permalink
   end
+
+  def test_permalink_should_be_truncated_without_trailing_dash
+    Post.class_eval "make_permalink :with => :title, :param_size => 9"
+    post = Post.create(:title => "this one is a very long title")
+    assert_equal "this-one",    post.to_param
+    assert_equal post.to_param, post.permalink
+  end
   
   def test_should_search_field_for_to_param_field
     User.class_eval "make_permalink :with => :login"

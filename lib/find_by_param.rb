@@ -190,11 +190,9 @@ Accepts an options hash as a second parameter which is passed on to the rails fi
             permalink_options[:forbidden_match] =~ permalink_value
         end
 
-
-        #this escapes and truncates a value.
-        #used to escape and truncate permalink value
         def escape_and_truncate_permalink(value)
-          self.escape_permalink(value)[0...self.permalink_options[:param_size]]
+          p = self.escape_permalink(value)[0...self.permalink_options[:param_size]]
+          p.ends_with?('-') ? p.chop : p
         end
       end
 
