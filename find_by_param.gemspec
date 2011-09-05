@@ -16,9 +16,9 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.rubyforge_project = '[none]'
 
-  s.add_dependency('activerecord', '~> 2.3')
-  s.add_dependency('activesupport', '~> 2.3')
-  
+  s.add_dependency('activerecord', '~> 3.0.3')
+  s.add_dependency('activesupport', '~> 3.0.3')
+
   s.add_development_dependency('sqlite3-ruby')
   s.add_development_dependency('rake')
 end
