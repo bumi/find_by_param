@@ -1,5 +1,4 @@
 begin
-  $KCODE = 'u'
   require 'rubygems'
   require 'active_support'
 rescue LoadError
