@@ -11,7 +11,7 @@ module Railslove
         return if ActiveRecord::Base.kind_of?(self::ClassMethods)
 
         ActiveRecord::Base.class_eval do
-          class_inheritable_accessor :permalink_options
+          class_attribute :permalink_options
           self.permalink_options = {:param => :id}
 
           #default finders these are overwritten if you use make_permalink in
@@ -168,8 +168,8 @@ finder.
 
         def validate_param_is_not_blank
           if self.escape_and_truncate_permalink(self.send(permalink_options[:with])).blank?
-            errors.add(permalink_options[:with], 
-                       "must have at least one non special character (a-z 0-9)") 
+            errors.add(permalink_options[:with],
+                       "must have at least one non special character (a-z 0-9)")
           end
         end
 
@@ -205,3 +205,4 @@ end
 if defined?(ActiveRecord)
   Railslove::Plugins::FindByParam.enable
 end
+
