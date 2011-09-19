@@ -7,7 +7,7 @@ permalink value
       make_permalink :with => :title
     end
 
-now you can do 
+now you can do
   
     Post.find_by_param(...)
 
@@ -43,7 +43,7 @@ find_by_param is known to work with Rails 2.3, 3.0 and 3.1.
 
 === Client code
 
-    Post.create(:title => "hey ho let's go!").to_param #=> "hey-ho-lets-go" 
+    Post.create(:title => "hey ho let's go!").to_param #=> "hey-ho-lets-go"
               # ... to_param is the method Rails calls to create the URL values
 
     Post.find_by_param("hey-ho-lets-go") #=> <Post>
@@ -65,8 +65,8 @@ with +make_permalink+.
 
 * <tt>:field</tt>
 
-  The name of your permalink column. make_permalink first checks if there is 
-  a column. 
+  The name of your permalink column. make_permalink first checks if there is
+  a column.
 
 * <tt>:prepend_id => [true|false]</tt>
 
