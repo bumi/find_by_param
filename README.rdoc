@@ -30,6 +30,8 @@ uses that otherwise it just uses the provided attribute.
 
     % script/plugin install git://github.com/bumi/find_by_param.git
 
+find_by_param is known to work with Rails 2.3, 3.0 and 3.1.
+
 
 == Examples
 
