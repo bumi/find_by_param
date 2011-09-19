@@ -1,4 +1,6 @@
 begin
+  $KCODE = 'u' if RUBY_VERSION < '1.9'
+
   require 'rubygems'
   require 'active_support'
 rescue LoadError
