@@ -16,8 +16,10 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.rubyforge_project = '[none]'
 
-  s.add_dependency('activerecord', '~> 3.1.0')
-  s.add_dependency('activesupport', '~> 3.1.0')
+  # Currently supports Rails 2.3, 3.0, and 3.1, but I cannot express that using
+  # Gem dependencies.
+  s.add_dependency('activerecord')
+  s.add_dependency('activesupport')
 
   s.add_development_dependency('sqlite3-ruby')
   s.add_development_dependency('rake')
