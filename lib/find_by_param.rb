@@ -13,7 +13,12 @@ module Railslove
         return if ActiveRecord::Base.kind_of?(self::ClassMethods)
 
         ActiveRecord::Base.class_eval do
-          class_attribute :permalink_options
+          if respond_to? :class_attribute
+            class_attribute :permalink_options
+          else
+            class_inheritable_accessor :permalink_options
+          end
+
           self.permalink_options = {:param => :id}
 
           #default finders these are overwritten if you use make_permalink in
@@ -207,4 +212,3 @@ end
 if defined?(ActiveRecord)
   Railslove::Plugins::FindByParam.enable
 end
-
